@@ -21,6 +21,9 @@ def imageProcessor(rawImage, i, j, n, m, Mode = 0):
     elif Mode == 1: #flat
         resizeImage = resizeImage.resize((360, 360), Image.ANTIALIAS)
         result.paste(resizeImage, (156,410))
+    elif Mode == 2: #block upper face
+        resizeImage = resizeImage.resize((226, 226), Image.ANTIALIAS)
+        result.paste(resizeImage, (287,216))
         
     saveFileName = "result" + str(i) + str(j) + ".png"
     print "Save image", saveFileName
@@ -42,7 +45,7 @@ if n >= 10 or m >= 10:
 if ((n == m) & (inputImage.size[0] != inputImage.size[1])):
     print "NOTICE!! input image is not a square size!"
 
-mode = int(raw_input("Block or Flat?\nInput 0 for block\nInput 1 for flat\n"))
+mode = int(raw_input("Block or Flat?\nInput 0 for block\nInput 1 for flat\nInput 2 for block's upper face"))
 
 for i in range(n):
     for j in range(m):
