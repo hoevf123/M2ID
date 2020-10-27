@@ -77,7 +77,9 @@ def str_to_hexlist(str_hex):
         if(len(str_hex) in [3,4,6,8]):
             str_len = len(str_hex)
             def str_to_hex(str_char):
-                str_char = str(str_char)
+                str_char = str(str_char).strip()
+                if(str_char.startswith("0x")):
+                    str_char = str_char[2:] # remove head "0x" word
                 hex_result = 0
                 for a in str_char:
                     a = a.lower()
@@ -107,7 +109,7 @@ def str_to_hexlist(str_hex):
 def signedint_to_alphabetString(value_int):
     digit = 26 # count of A-Z letters(UpperCase Only), sum of 26 alphabets.
     result_letter=""
-    if not(str(value_int).isnumeric):
+    if not(str(value_int).isdecimal()):
         return None
     if(value_int < 0): # convert minus value to adjacent maximum modular plus value. (ex : -26 => 500)
         mulpliy_counts = int(math.log(digit, -value_int)) + 1
