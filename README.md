@@ -14,7 +14,7 @@ http://www.inven.co.kr/board/maple2/4276/6917 (메이플2 인벤, 이 프로그�
 
 
 # 프로그램 정보
-프로그램 원작자 : 지뉴 님 (Airplaner), 프로그램 변경자 : 비숍의하루 님 (hoevf123)
+프로그램 원작자 : 지뉴 님 (Airplaner), 프로그램 변경자 : 비숍의하루 님 (hoevf123)<
 언어 : 영어(한글 입력 가능, 모든 설명은 영어로 되어 있음)<br/>
 사용 환경 : Windows, 콘솔 또는 파일 형태로 입력 (단, 실행 환경은 CUI)<br/>
 ![지뉴 프로그램 허가 조건](https://user-images.githubusercontent.com/6872722/97995398-cc98f200-1e29-11eb-8004-353a57517eb0.PNG)<br/>
