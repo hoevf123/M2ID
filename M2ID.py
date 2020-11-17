@@ -64,6 +64,20 @@ modified info (2020-11-03)
 - added or modified bunch of irritatable processing messages.
 - added image skewing functions(copied from stackoverflow.com web site). but, it's deprecated because of the Mode 12 function implementation failure.
 
+
+modified info (2020-11-17)
+- fixed(swapped) the rownums and colnums are swapped. (and defined row and col names definition)
+- fixed transparent image sets to transparent color, correction to overlayed background color. (changed paste method to alpha_composite method)
+- changed Program Exit print message when image processing is done. (M2ID origin user's request at comment)
+- added image description, contained to the github readme.md
+
+further, will de developing...
+- multiple image input support(repeatable work available)
+- program execution with argument(s) support (argv)
+  (so, i'm trying to skip input file or directory name(s) when argv is input at required 0 remaining image file request(s))
+- replaced result file saved at source file placing directory(on first file in work progress)
+- file input available by directory(folder), proceed all files in current working directory(NOT RECURSIVE)
+
 '''
 
 from PIL import Image
@@ -251,6 +265,9 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
         
         resizeImage = rawImage.crop((j*width, i*height, j*width+width, i*height+height))
 
+        # forces image types to RGBA type to use alpha_compositie method cause of mapping alpha color directly.
+        resizeImage.convert("RGBA")
+
         ####
         # CUBE(S)
         # 0 : Design Cube front face
@@ -260,43 +277,43 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
 
         if Mode == 0: # Design Cube front face
             resizeImage = resizeImage.resize((230, 230), Image.ANTIALIAS)
-            result.paste(resizeImage, (286,438))
+            result.alpha_composite(resizeImage, (286,438))
 
         elif Mode == 1: # Design Cube upper face
             resizeImage = resizeImage.resize((229, 229), Image.ANTIALIAS)
-            result.paste(resizeImage, (285,213))
+            result.alpha_composite(resizeImage, (285,213))
             # some addition : left side
             tmpImage = resizeImage.crop((0,0,6,228))
             tmpImage = tmpImage.resize((229,229),Image.ANTIALIAS)
             tmpImage = tmpImage.rotate(90)
             tmpImage = tmpImage.resize((229,7),Image.ANTIALIAS)
-            result.paste(tmpImage, (55, 438))
+            result.alpha_composite(tmpImage, (55, 438))
 
             # some addition : right side
             tmpImage = resizeImage.crop((222,0,228,228))
             tmpImage = tmpImage.resize((229,229),Image.ANTIALIAS)
             tmpImage = tmpImage.rotate(270)
             tmpImage = tmpImage.resize((229,7),Image.ANTIALIAS)
-            result.paste(tmpImage, (514,438))
+            result.alpha_composite(tmpImage, (514,438))
 
             # some addition : down side
             tmpImage = resizeImage.crop((0,226,228,228))
-            result.paste(tmpImage, (285,442))
+            result.alpha_composite(tmpImage, (285,442))
 
         elif Mode == 2: # Design Cube Surrounding Side face / Rotating Block (4 faces)
             BLOCKSIZE = 227
             if remainingFace == 3:
                 resizeImage = resizeImage.resize((BLOCKSIZE, BLOCKSIZE), Image.ANTIALIAS)
-                result.paste(resizeImage, (57,440))
+                result.alpha_composite(resizeImage, (57,440))
             elif remainingFace == 2:
                 resizeImage = resizeImage.resize((BLOCKSIZE, BLOCKSIZE), Image.ANTIALIAS)
-                result.paste(resizeImage, (57+BLOCKSIZE,440))
+                result.alpha_composite(resizeImage, (57+BLOCKSIZE,440))
             elif remainingFace == 1:
                 resizeImage = resizeImage.resize((BLOCKSIZE, BLOCKSIZE), Image.ANTIALIAS)
-                result.paste(resizeImage, (57+2*BLOCKSIZE,440))
+                result.alpha_composite(resizeImage, (57+2*BLOCKSIZE,440))
             elif remainingFace == 0:
                 resizeImage = resizeImage.resize((BLOCKSIZE, BLOCKSIZE), Image.ANTIALIAS)
-                result.paste(resizeImage, (57+3*BLOCKSIZE,440))
+                result.alpha_composite(resizeImage, (57+3*BLOCKSIZE,440))
 
         ####
         # FLAT CUBE(S)
@@ -308,11 +325,11 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
 
         elif Mode == 3: #divider cube (flat type) front face
             resizeImage = resizeImage.resize((360, 360), Image.ANTIALIAS)
-            result.paste(resizeImage, (156,410))
+            result.alpha_composite(resizeImage, (156,410))
         
         elif Mode == 4: #broad rectangle cube (flat type) front face
             resizeImage = resizeImage.resize((304, 304), Image.ANTIALIAS)
-            result.paste(resizeImage, (214,456))
+            result.alpha_composite(resizeImage, (214,456))
             pass
 
         elif Mode == 5: #arch piliar cube (flat type) front face
@@ -323,12 +340,12 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
 
             # face 1 : front face
             tmpImage = resizeImage.crop((0,3,294,294))
-            result.paste(tmpImage, (512,480))
+            result.alpha_composite(tmpImage, (512,480))
 
             # face 2 : edge 4px
             tmpImage = resizeImage.crop((0,0,294,6))
             tmpImage = tmpImage.rotate(90, expand=True)
-            result.paste(tmpImage, (512,188))
+            result.alpha_composite(tmpImage, (512,188))
             pass
 
         ####
@@ -346,35 +363,35 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
 
         elif Mode == 6: #Arch Ceiling Cube (Upper face)
             resizeImage = resizeImage.resize((294, 294), Image.ANTIALIAS)
-            result.paste(resizeImage, (447,238))
+            result.alpha_composite(resizeImage, (447,238))
             pass
         
         elif Mode == 7: #floor panel upper face
             # NOTE: need helps to adjusting edge modification
             resizeImage = resizeImage.resize((342, 342), Image.ANTIALIAS)
-            result.paste(resizeImage, (347,144))
+            result.alpha_composite(resizeImage, (347,144))
 
         elif Mode == 8: #Arch Type Cube (Upper face)
             resizeImage = resizeImage.resize((224, 224), Image.ANTIALIAS)
-            result.paste(resizeImage, (507,275))
+            result.alpha_composite(resizeImage, (507,275))
             pass
 
         elif Mode == 9: #Arch Type Cube (Upper face, 180 degree)
             resizeImage = resizeImage.resize((224, 224), Image.ANTIALIAS)
             resizeImage = resizeImage.rotate(180)
-            result.paste(resizeImage, (507,275))
+            result.alpha_composite(resizeImage, (507,275))
             pass
 
         elif Mode == 10: #Arch Type Cube (Upper face, 90 degree, reverse 'r' type direction)
             resizeImage = resizeImage.resize((224, 224), Image.ANTIALIAS)
             resizeImage = resizeImage.rotate(90)
-            result.paste(resizeImage, (507,275))
+            result.alpha_composite(resizeImage, (507,275))
             pass
 
         elif Mode == 11: #Arch Type Cube (Upper face, 270 degree, reverse 'r' type direction)
             resizeImage = resizeImage.resize((224, 224), Image.ANTIALIAS)
             resizeImage = resizeImage.rotate(270)
-            result.paste(resizeImage, (507,275))
+            result.alpha_composite(resizeImage, (507,275))
             pass
 
         elif Mode == 12: #Arch Type Cube (Back face)
@@ -386,7 +403,7 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
 
             # Part 1 : Main face ((0,4) to (224, 224))
             tmpImage = resizeImage.crop((0,4,224,222))
-            result.paste(tmpImage, (68,496))
+            result.alpha_composite(tmpImage, (68,496))
 
             # Part 2 : top face ((0,0) to (224,2))
             tmpImage = resizeImage.crop((4,0,220,4))
@@ -394,7 +411,7 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
             #tmpImage = tmpImage.transform((226,4), Image.AFFINE, data=find_coeffs([(0,0), (224,0), (224,4),(0,4)], [(0,0), (228,0), (228,4), (0,4)]))
             tmpImage = tmpImage.rotate(180)
 
-            result.paste(tmpImage, (507,275))
+            result.alpha_composite(tmpImage, (507,275))
             pass
     
     current_file_name=""
@@ -403,20 +420,33 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
     if not(current_file_name == ""):
         current_file_name = current_file_name[:current_file_name.rfind(".")]
         current_file_name = current_file_name.replace("../", "   ").replace("./", "  ")[current_file_name.rfind("/") + 1:]
+
+    '''
+    SAVEFILE RULE about coordinates
+        A    B    C    ... (column number as index j, use as FIRST STARTS 'A' to 'Z' symbol)
+    0 (0,0)(0,1)(0,2)
+    1 (1,0)(1,1)(1,2)
+    2 (2,0)(2,1)(2,2)
+    ...
+    (row number as index i, use as FIRST STARTS '0' to '9' symbol)
+
+    Example of CROPPED SAVEFILE NAME
+    The filename of B2(2,1) is "(blahblah as FILENAME)_resultB2.png"
+    '''
     
-    saveFileName = str(current_file_name) + "_result" + str(signedint_to_alphabetString(int(i))) + str(j) + ".png"
+    saveFileName = str(current_file_name) + "_result" + str(signedint_to_alphabetString(int(j))) + str(i) + ".png" # i as row(vertical) number, j as column(horizontal) number
     print("Saved Design Template image file : ", saveFileName)
     result.save(saveFileName)
 
 
 print("""
 M2ID(Maplestory2 Image Devider) by Airplaner(지뉴 in KMS2), mod by 비숍의하루.
-Last Modified : 2020. 11. 03.
+Last Modified : 2020. 11. 17.
 This Program is forced Open Source policy, can be distributed and modded for any purpose with just remarking origin owner(지뉴) on source code and distribution.
 for any Question : (Discord, Forked Branch) 비숍의하루#5686 / (Discord, Master Branch) Airplaner#7961
 
 Github repository URLs.
-- Airplaner/M2ID (MASTER BRANCH) : https://github.com/Airplaner/M2ID/
+- Airplaner/M2ID (MASTER BRANCH) : https://github.com/Airplaner/M2ID/   
 - hoevf123/M2ID (forked Project, This Program) : https://github.com/hoevf123/M2ID
 """)
 
@@ -527,4 +557,4 @@ for i in range(n):
     for j in range(m):
         imageProcessor(inputImage, j, i, n, m, mode, bg_color)
 
-raw_input ("Press Enter to Continue...")
+raw_input ("Press Enter to Exit...")
