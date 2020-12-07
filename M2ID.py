@@ -71,6 +71,11 @@ modified info (2020-11-17)
 - changed Program Exit print message when image processing is done. (M2ID origin user's request at comment)
 - added image description, contained to the github readme.md
 
+modified info (2020-12-08)
+- fixed bugs to not working image process when non-transparentive image file(s) input.
+- NxM value input can be skipped with default value when you're enter wrong value or Nothing
+- Updated readme.md for changed NxM division Method
+
 further, will de developing...
 - multiple image input support(repeatable work available)
 - program execution with argument(s) support (argv)
@@ -117,6 +122,31 @@ def raw_inputImage(message, skip=False):
             break
     
     return inputImage
+    
+def raw_inputImages(message, requestTimes, skip=False):
+    ret_inputImages = []
+    remainingTimes = requestTimes - 1
+    while(0 <= remainingTimes):
+        ret_inputImage = [raw_inputImage(str(message).replace(str("%d"), str(remainingTimes)) ,skip)]
+        remainingTimes -= len(ret_inputImage)
+        ret_inputImages.extend(ret_inputImage)
+
+    return ret_inputImages
+
+def int_input(message="", default_value=None):
+    #Convert 0-9 Decimal number to integer value as string
+    string_number_values = (raw_input(message).replace("  ", " ").strip().split(" "))
+    ret_value = default_value
+    for string_number_value in string_number_values:
+        try:
+            ret_value = int(string_number_value)
+        except:
+            print(sys.exc_info())
+            print("Number Conversion Error :", string_number_value , " so ret_value sets to default value %d" % (ret_value,))
+            pass
+        break
+    return ret_value
+        
     
 
 # copied function from https://stackoverflow.com/questions/14177744/how-does-perspective-transformation-work-in-pil
@@ -266,7 +296,7 @@ def imageProcessor(rawImage_origin, i, j, n, m, Mode = 0, fill="white"):
         resizeImage = rawImage.crop((j*width, i*height, j*width+width, i*height+height))
 
         # forces image types to RGBA type to use alpha_compositie method cause of mapping alpha color directly.
-        resizeImage.convert("RGBA")
+        resizeImage = resizeImage.convert("RGBA")
 
         ####
         # CUBE(S)
@@ -492,12 +522,14 @@ Your Choose Mode Number > """))
 # FILE NAME INPUT
 print("Current Directory's Including File")
 print(os.listdir())
-inputImage = raw_inputImage("Input File Name including extension. ex) image.png (just PRESS Enter to skip) > ", skip=True)
+
+# in normal mode, 1 image requies.
+need_imagefileCounts = 1
 if mode == 2: # Mode 2 Requires 3 more images. (total 4)
-    inputImage = [inputImage, 
-    raw_inputImage("Input Second Image. (reamining 2 more Images, just PRESS Enter to skip) > ", skip=True),
-    raw_inputImage("Input  Third Image. (reamining 1 more Images, just PRESS Enter to skip) > ", skip=True),
-    raw_inputImage("Input Fourth Image. (reamining 0 more Images, just PRESS Enter to skip) > ", skip=True)]
+    need_imagefileCounts = 4
+
+inputImage = list(raw_inputImages("Input File Name including extension. ex) image.png (reamining %d more Images, just PRESS Enter to skip) > ", need_imagefileCounts, skip=True))
+
 
 
 
@@ -511,50 +543,77 @@ else:
         bg_color=bg_color[1:9]
         
 # IMAGE DIVIDING VALUE INPUT
+default_row_value = 1
+default_column_value = 1
 print("Divide image with NxM (with N columns, M rows)")
-print("input N in integer")
-n = int(input())
-print("input M in integer")
-m = int(input())
+print("input N column(s) in integer (skip to default value : %d)" % (default_column_value,))
+n = abs(int_input(default_value=default_column_value))
+print("input M row(s)in integer (skip to default value : %d)" % (default_row_value,))
+m = abs(int_input(default_value=default_row_value))
 
 
 
-# save each images with cropped result(NOT USED TO PASTE Result Design Templates)
 
-# IMAGE CROP INGREDIENT PREPARATION AND NAME RESULT FILE
-tmpImages = []
+# Modulize main function to Support multiple file group processing
+def makeImageProcess(mode, inputImage, n, m, bg_color):
+    # save each images with cropped result(NOT USED TO PASTE Result Design Templates)
+    # IMAGE CROP INGREDIENT PREPARATION AND NAME RESULT FILE
+    tmpImages = []
 
-print(type(inputImage))
-if isinstance(inputImage, (list, set, tuple)):
-    tmpImages = inputImage
-else:
-    tmpImages.append(inputImage)
-
-for arg_inputImage in tmpImages:
-    #if not(isinstance(inputImage, Image)):
-    if arg_inputImage == None:
-        continue
-    inputImageName = arg_inputImage.filename
-    w = arg_inputImage.size[0]/n
-    h = arg_inputImage.size[1]/m
-
-    print("Image file " + str(inputImageName) + " size is ", str(arg_inputImage.size[0]),"x", str(arg_inputImage.size[1]))
-    # fit cropped image to width or height and then show result of cropped origin image size
-    if w > h:
-        w = h
-        print("Image file " + str(inputImageName) + " :: " + str(100 - w*n*100/arg_inputImage.size[0]), "% lost for width")
+    print(type(inputImage))
+    if isinstance(inputImage, (list, set, tuple)):
+        tmpImages = inputImage
     else:
-        h = w
-        print("Image file " + str(inputImageName) + " :: " + str(100 - h*m*100/arg_inputImage.size[1]), "% lost for height")
+        tmpImages.append(inputImage)
 
-    # save cropped origin image
-    tmpImage = arg_inputImage.crop((0,0,w*n,h*m))
-    resultorigin_imageName = inputImageName[:inputImageName.rfind(".")][inputImageName.replace("../", "   ").replace("./","  ").rfind("/") + 1:] + "_result.png"
-    tmpImage.save(resultorigin_imageName)
-    print("Saved Cropped origin image :: " + resultorigin_imageName)
+    for arg_inputImage in tmpImages:
+        #if not(isinstance(inputImage, Image)):
+        if arg_inputImage == None:
+            continue
+        inputImageName = arg_inputImage.filename
+        w = arg_inputImage.size[0]/n
+        h = arg_inputImage.size[1]/m
 
-for i in range(n):
-    for j in range(m):
-        imageProcessor(inputImage, j, i, n, m, mode, bg_color)
+        print("Image file " + str(inputImageName) + " size is ", str(arg_inputImage.size[0]),"x", str(arg_inputImage.size[1]))
+        # fit cropped image to width or height and then show result of cropped origin image size
+        if w > h:
+            w = h
+            print("Image file " + str(inputImageName) + " :: " + str(100 - w*n*100/arg_inputImage.size[0]), "% lost for width")
+        else:
+            h = w
+            print("Image file " + str(inputImageName) + " :: " + str(100 - h*m*100/arg_inputImage.size[1]), "% lost for height")
+
+        # save cropped origin image
+        tmpImage = arg_inputImage.crop((0,0,w*n,h*m))
+        resultorigin_imageName = inputImageName[:inputImageName.rfind(".")][inputImageName.replace("../", "   ").replace("./","  ").rfind("/") + 1:] + "_result.png"
+        tmpImage.save(resultorigin_imageName)
+        print("Saved Cropped origin image :: " + resultorigin_imageName)
+
+    for i in range(n):
+        for j in range(m):
+            imageProcessor(inputImage, j, i, n, m, mode, bg_color)
+
+
+# make workload queue
+if not isinstance(inputImage,(list, tuple, set)):
+    inputImage = list(inputImage)
+
+processImageQueue = []
+index_i = 0
+index_div_col = -1
+index_div_row = -1
+len_inputImage = len(inputImage)
+while(index_i < len_inputImage):
+    if(index_i % len_inputImage == 0):
+        processImageQueue.append([])
+        index_div_row += 1
+        index_div_col = 0
+    processImageQueue[int(index_div_row)].append(inputImage[index_i])
+    index_i += 1
+    index_div_col += 1
+
+# process made workload queue by list
+for sequence_inputImage in processImageQueue:
+    makeImageProcess(mode, sequence_inputImage, n, m, bg_color)
 
 raw_input ("Press Enter to Exit...")
