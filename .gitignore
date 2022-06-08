@@ -5,3 +5,6 @@ M2MD.py
 *.jpeg
 *.gif
 *.bmp
+
+#설명서.png should be uploaded.
+!./설명서.png

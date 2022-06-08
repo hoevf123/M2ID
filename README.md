@@ -42,7 +42,7 @@ Github Forked Branch (this) https://github.com/hoevf123/M2ID<br/>
 
 ## 설명서
 
-![설명서](https://user-images.githubusercontent.com/6872722/99346405-e5001680-28d7-11eb-8443-cbbcaa2496c1.png) <br/>
+![설명서](./%EC%84%A4%EB%AA%85%EC%84%9C.png) <br/>
 <br/>
 
 ## 공방 도안 제작 가능목록
@@ -105,8 +105,6 @@ Github Forked Branch (this) https://github.com/hoevf123/M2ID<br/>
 
 이미지 처리 결과 확인은 M2ID 프로그램이 실행된 파일 위치에 저장됩니다.<br/>
 (이 프로그램의 결과물은 덮어쓰기 형태로 저장되오니, 원본을 보관해야 하는 사람에게는 파일 관리에 주의를 당부드립니다)<br/>
-
-![파일명 지정원리](https://user-images.githubusercontent.com/6872722/97998071-00c1e200-1e2d-11eb-8276-c0971a979940.png)
 
 파일 저장 형태 (png 파일 고정)
 - (파일명).png (실제로 이미지가 붙여지는 부분의 전체 결과 이미지)(단, 파일명이 없을 경우에는 생성되지 않습니다)

@@ -98,7 +98,7 @@ os.chdir(os.path.dirname(os.path.realpath(__file__)))
 global raw_input
 
 try:
-    if(raw_input == None):
+    if not(raw_input == None):
         pass
 except(NameError):
     raw_input = input
