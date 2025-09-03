@@ -27,6 +27,9 @@ Github Forked Branch (this) https://github.com/hoevf123/M2ID<br/>
 # 사용 방법
 (실행 파일인 경우 M2ID.exe, 소스코드인 경우 M2ID.py (pip install pillow 필요)) 실행 후 아래 순서를 따라주세요.<br/>
 실행 가능한 파일은 이곳에 있는 첨부 파일을 통해 다운로드해주세요. http://www.inven.co.kr/board/maple2/4276/6917 <br/>
+(2025.09.04 추가). 프로젝트 내 M2ID.exe 파일을 다운로드 받아주세요. <br/>
+[M2ID.exe 실행 파일 다운로드](https://github.com/hoevf123/M2ID/releases/tag/executableFile)
+
 
 # 프로그램 실행 전 필요한 것.
 - 영어 독해능력
